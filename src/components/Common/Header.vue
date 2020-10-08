@@ -1,0 +1,409 @@
+<template>
+    <div class="header">
+        <div class="mid">
+            <div class="logo" @click="index"></div>
+            <div class="menu">
+                <div class="ul">
+                    <div class="li" @click="task">
+                        <a href="javascript:;">任务列表</a>
+                    </div>
+                    <div class="li" @click="help">
+                        <a href="javascript:;">使用教程</a>
+                    </div>
+                    <div class="li" @click="knowledge">
+                        <a href="javascript:;">常见问题</a>
+                    </div>
+                    <div class="li" @click="contact">
+                        <a href="javascript:;">联系我们</a>
+                    </div>
+                </div>
+            </div>
+            <div class="btns">
+                <div class="loginBtn" @click="login">用户登录</div>
+                <div class="reg" @click="reg">注册</div>
+            </div>
+        </div>
+        <yd-popup v-model="showLogin" position="center" width="90%">
+            <div class="login">
+                <div class="l01"></div>
+                <div class="l02">
+                    <div class="t01">
+                        <div class="span">账户登录</div>
+                    </div>
+                    <div class="t02">邮箱</div>
+                    <div class="t03">
+                        <div class="img">
+                            <img src="../../assets/i06.png" />
+                        </div>
+                        <input type="text" name="" placeholder="请输入邮箱" />
+                    </div>
+                    <div class="t04">密码</div>
+                    <div class="t05">
+                        <div class="img">
+                            <img src="../../assets/i07.png" />
+                        </div>
+                        <input
+                            type="password"
+                            name=""
+                            placeholder="请输入密码"
+                        />
+                    </div>
+                    <div class="t06">登录</div>
+                    <div class="t07">
+                        <a href="javascript:;" @click="tos" class="a01"
+                            >服务条款</a
+                        >
+                        <a href="" class="a02">忘记密码</a>
+                    </div>
+                </div>
+                <div class="l03" @click="close(1)">×</div>
+            </div>
+        </yd-popup>
+
+        <yd-popup v-model="showReg" position="center" width="90%">
+            <div class="login reg">
+                <div class="l01"></div>
+                <div class="l02">
+                    <div class="t02">邮箱</div>
+                    <div class="t03">
+                        <div class="img">
+                            <img src="../../assets/i06.png" />
+                        </div>
+                        <input
+                            type="text"
+                            v-model="email"
+                            placeholder="请输入邮箱"
+                        />
+                    </div>
+                    <div class="t04">密码</div>
+                    <div class="t05">
+                        <div class="img">
+                            <img src="../../assets/i07.png" />
+                        </div>
+                        <input
+                            type="password"
+                            v-model="password"
+                            name=""
+                            placeholder="请输入密码"
+                        />
+                    </div>
+                    <div class="t04">确认密码</div>
+                    <div class="t05">
+                        <div class="img">
+                            <img src="../../assets/i07.png" />
+                        </div>
+                        <input
+                            type="password"
+                            v-model="password2"
+                            placeholder="请输入密码"
+                        />
+                    </div>
+                    <div class="t06" @click="addReg">注册</div>
+                    <div class="t07">
+                        <a href="" class="a01">服务条款</a>
+                        <a href="" class="a02">登录</a>
+                    </div>
+                </div>
+                <div class="l03" @click="close(2)">×</div>
+            </div>
+        </yd-popup>
+    </div>
+</template>
+
+<script>
+import request from "@/api/req.js";
+export default {
+    name: "Header",
+    data() {
+        return {
+            showLogin: false,
+            showReg: false,
+            email: "409703312@qq.com",
+            password: "123456",
+            password2: "123456",
+        };
+    },
+    props: [],
+    created() {
+        var th = this;
+    },
+    methods: {
+        task() {
+            var th = this;
+            th.$router.push({
+                path: "/task",
+            });
+        },
+        help() {
+            var th = this;
+            th.$router.push({
+                path: "/help",
+            });
+        },
+        knowledge() {
+            var th = this;
+            th.$router.push({
+                path: "/knowledge",
+            });
+        },
+        contact() {
+            var th = this;
+            alert("contact");
+        },
+        index() {
+            var th = this;
+            th.$router.push({
+                path: "/",
+            });
+        },
+        login() {
+            var th = this;
+            th.showLogin = true;
+        },
+        reg() {
+            var th = this;
+            th.showReg = true;
+        },
+        tos() {
+            var th = this;
+            th.$router.push({
+                path: "/tos",
+            });
+        },
+        close(type) {
+            var th = this;
+            if (type == 1) {
+                th.showLogin = false;
+            }
+            if (type == 2) {
+                th.showReg = false;
+            }
+        },
+        addReg() {
+            //注册
+            let dict = {
+                email: this.email,
+                password: this.password,
+                code: this.code,
+            };
+            request
+                .postReg(dict)
+                .then((res) => {
+                    if (res.code == 0) {
+                    }
+                })
+                .catch((err) => console.log(err));
+        },
+    },
+};
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+.header {
+    width: 100%;
+    height: 56px;
+    border-bottom: 1px solid #e0e5f1;
+}
+.header .mid {
+    width: 1600px;
+    height: 56px;
+    margin: 0 auto;
+    position: relative;
+}
+.header .mid .logo {
+    width: 94px;
+    height: 32px;
+    background: url(../../assets/logo.png) no-repeat center;
+    position: absolute;
+    left: 0;
+    top: 12px;
+    cursor: pointer;
+}
+.header .mid .menu {
+    width: 520px;
+    height: 56px;
+    position: absolute;
+    right: 200px;
+    top: 0;
+}
+.header .mid .menu .ul {
+    width: 520px;
+    height: 56px;
+}
+.header .mid .menu .ul .li {
+    width: 130px;
+    height: 56px;
+    float: left;
+    text-align: center;
+    line-height: 56px;
+}
+.header .mid .menu .ul .li a {
+    color: #142655;
+    font-size: 16px;
+}
+.header .mid .menu .ul .li a:hover {
+    color: #e80000;
+}
+.header .mid .btns {
+    width: 160px;
+    height: 56px;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.header .mid .btns .loginBtn {
+    width: 90px;
+    height: 34px;
+    background: #466ef5;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 34px;
+    color: #fff;
+    font-size: 14px;
+    position: absolute;
+    left: 0;
+    top: 11px;
+    cursor: pointer;
+}
+.header .mid .btns .reg {
+    width: 50px;
+    height: 34px;
+    background: #fff;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 34px;
+    color: #474747;
+    font-size: 14px;
+    position: absolute;
+    right: 0;
+    top: 11px;
+    border: 1px solid #d9d9d9;
+    cursor: pointer;
+}
+.login {
+    width: 370px;
+    height: 480px;
+    background: #fff;
+    margin: 0 auto;
+    border-radius: 5px;
+    padding-top: 20px;
+    position: relative;
+}
+.reg {
+    height: 500px;
+}
+.login .l01 {
+    width: 100%;
+    height: 100px;
+    background: url(../../assets/logo1.png) no-repeat center;
+}
+.login .l02 {
+    width: 280px;
+    height: 360px;
+    margin: 0 auto;
+}
+.login .l02 .t01 {
+    width: 280px;
+    height: 60px;
+    border-bottom: 1px solid #eeeeee;
+}
+.login .l02 .t01 .span {
+    width: 105px;
+    height: 58px;
+    border-bottom: 2px solid #325ff8;
+    margin: 0 auto;
+    color: #325ff8;
+    font-size: 18px;
+    text-align: center;
+    line-height: 58px;
+}
+.login .l02 .t02 {
+    width: 280px;
+    height: 45px;
+    margin-top: 10px;
+    line-height: 45px;
+    color: #142655;
+}
+.login .l02 .t03 {
+    width: 280px;
+    height: 35px;
+    position: relative;
+}
+.login .l02 .t03 input {
+    width: 240px;
+    height: 28px;
+    padding: 2px 10px 2px 30px;
+    border: 1px solid #f0f0f0;
+}
+.login .l02 .t03 .img {
+    width: 23px;
+    height: 23px;
+    position: absolute;
+    left: 2px;
+    top: 7px;
+}
+.login .l02 .t04 {
+    width: 280px;
+    height: 45px;
+    margin-top: 10px;
+    line-height: 45px;
+    color: #142655;
+}
+.login .l02 .t05 {
+    width: 280px;
+    height: 35px;
+    position: relative;
+}
+.login .l02 .t05 input {
+    width: 240px;
+    height: 28px;
+    padding: 2px 10px 2px 30px;
+    border: 1px solid #f0f0f0;
+}
+.login .l02 .t05 .img {
+    width: 23px;
+    height: 23px;
+    position: absolute;
+    left: 2px;
+    top: 7px;
+}
+.login .l02 .t06 {
+    width: 280px;
+    height: 34px;
+    background: #466ef5;
+    color: #fff;
+    text-align: center;
+    line-height: 34px;
+    margin-top: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.login .l02 .t07 {
+    width: 280px;
+    height: 40px;
+    line-height: 40px;
+    position: relative;
+    margin-top: 20px;
+}
+.login .l02 .t07 .a01 {
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #466ef5;
+}
+.login .l02 .t07 .a02 {
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: #466ef5;
+}
+.login .l03 {
+    position: absolute;
+    right: 15px;
+    top: 0;
+    color: #333;
+    font-size: 30px;
+    cursor: pointer;
+}
+</style>
