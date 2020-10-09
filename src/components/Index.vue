@@ -22,7 +22,7 @@
                 >
                 </textarea>
             </div>
-            <div class="in01_04">提取链接</div>
+            <div class="in01_04" @click="parseUrl">提取链接</div>
             <div class="in01_05">支持的云名称</div>
         </div>
         <div class="in_02">
@@ -105,9 +105,8 @@ export default {
             });
         },
         parseUrl() {
-            var th = this;
-            th.$router.push({
-                path: "/car",
+            this.$router.push({
+                path: "/task",
             });
         },
     },

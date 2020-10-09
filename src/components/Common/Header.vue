@@ -19,36 +19,40 @@
                 </div>
             </div>
             <div class="btns">
-                <div class="loginBtn" @click="login">用户登录</div>
+                <div class="loginBtn" @click="login">登录</div>
                 <div class="reg" @click="reg">注册</div>
             </div>
         </div>
         <yd-popup v-model="showLogin" position="center" width="90%">
-            <div class="login">
+            <div class="login" ref="form-login">
                 <div class="l01"></div>
                 <div class="l02">
                     <div class="t01">
-                        <div class="span">账户登录</div>
+                        <div class="span">登录</div>
                     </div>
                     <div class="t02">邮箱</div>
-                    <div class="t03">
+                    <div class="t03" prop="email">
                         <div class="img">
                             <img src="../../assets/i06.png" />
                         </div>
-                        <input type="text" name="" placeholder="请输入邮箱" />
+                        <input
+                            type="text"
+                            v-model="email"
+                            placeholder="请输入邮箱"
+                        />
                     </div>
                     <div class="t04">密码</div>
-                    <div class="t05">
+                    <div class="t05" prop="password">
                         <div class="img">
                             <img src="../../assets/i07.png" />
                         </div>
                         <input
                             type="password"
-                            name=""
+                            v-model="password"
                             placeholder="请输入密码"
                         />
                     </div>
-                    <div class="t06">登录</div>
+                    <div class="t06" @click="addLogin">登录</div>
                     <div class="t07">
                         <a href="javascript:;" @click="tos" class="a01"
                             >服务条款</a
@@ -61,25 +65,28 @@
         </yd-popup>
 
         <yd-popup v-model="showReg" position="center" width="90%">
-            <div class="login reg">
+            <div class="login reg" ref="form-reg">
                 <div class="l01"></div>
                 <div class="l02">
                     <div class="t02">邮箱</div>
                     <div class="t03">
-                        <div class="img">
-                            <img src="../../assets/i06.png" />
-                        </div>
                         <input
                             type="text"
                             v-model="email"
                             placeholder="请输入邮箱"
                         />
                     </div>
+                    <div class="t02">验证码</div>
+                    <div class="t03">
+                        <input
+                            type="text"
+                            v-model="code"
+                            placeholder="验证码"
+                        />
+                        <span @click="getCode">获取验证码</span>
+                    </div>
                     <div class="t04">密码</div>
                     <div class="t05">
-                        <div class="img">
-                            <img src="../../assets/i07.png" />
-                        </div>
                         <input
                             type="password"
                             v-model="password"
@@ -89,9 +96,6 @@
                     </div>
                     <div class="t04">确认密码</div>
                     <div class="t05">
-                        <div class="img">
-                            <img src="../../assets/i07.png" />
-                        </div>
                         <input
                             type="password"
                             v-model="password2"
@@ -112,37 +116,44 @@
 
 <script>
 import request from "@/api/req.js";
+import { validEmail, validPassword } from "@/utils/validate.js";
 export default {
     name: "Header",
     data() {
         return {
             showLogin: false,
             showReg: false,
-            email: "409703312@qq.com",
-            password: "123456",
-            password2: "123456",
+            email: "",
+            password: "",
+            password2: "",
+            code: "",
+            rules: {
+                email: [
+                    { required: true, message: "请输入邮箱" },
+                    { validator: validEmail, trigger: "blur" },
+                ],
+                password: [
+                    { required: true, message: "请输入密码" },
+                    { validator: validPassword, trigger: "blur" },
+                ],
+            },
         };
     },
     props: [],
-    created() {
-        var th = this;
-    },
+    created() {},
     methods: {
         task() {
-            var th = this;
-            th.$router.push({
+            this.$router.push({
                 path: "/task",
             });
         },
         help() {
-            var th = this;
-            th.$router.push({
+            this.$router.push({
                 path: "/help",
             });
         },
         knowledge() {
-            var th = this;
-            th.$router.push({
+            this.$router.push({
                 path: "/knowledge",
             });
         },
@@ -151,32 +162,27 @@ export default {
             alert("contact");
         },
         index() {
-            var th = this;
-            th.$router.push({
+            this.$router.push({
                 path: "/",
             });
         },
         login() {
-            var th = this;
-            th.showLogin = true;
+            this.showLogin = true;
         },
         reg() {
-            var th = this;
-            th.showReg = true;
+            this.showReg = true;
         },
         tos() {
-            var th = this;
-            th.$router.push({
+            this.$router.push({
                 path: "/tos",
             });
         },
         close(type) {
-            var th = this;
             if (type == 1) {
-                th.showLogin = false;
+                this.showLogin = false;
             }
             if (type == 2) {
-                th.showReg = false;
+                this.showReg = false;
             }
         },
         addReg() {
@@ -190,9 +196,56 @@ export default {
                 .postReg(dict)
                 .then((res) => {
                     if (res.code == 0) {
+                        this.setLoginData(res.data);
+                        this.$router.push({
+                            path: "/task",
+                        });
+                    } else {
+                        alert("注册失败");
                     }
                 })
                 .catch((err) => console.log(err));
+        },
+        addLogin() {
+            //登陆
+            let dict = {
+                email: this.email,
+                password: this.password,
+            };
+            request.postLogin(dict).then((res) => {
+                if (res.code == 0) {
+                    this.$router.push({
+                        path: "/task",
+                    });
+                } else {
+                    alert("登陆错误");
+                }
+            });
+        },
+        setLoginData(data) {
+            localStorage.setItem("uid", data.uid);
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("email", data.email);
+        },
+        getCode() {
+            //发送验证码
+            let dict = {
+                type: 1,
+                email: this.email,
+            };
+            request.postSendCode(dict).then((res) => {
+                if (res.code == 0) {
+                    alert("发送成功");
+                } else {
+                    alert("发送失败");
+                }
+            });
+            // this.$refs["form-reg"].validate((valid) => {
+
+            //     if (valid) {
+
+            //     }
+            // });
         },
     },
 };

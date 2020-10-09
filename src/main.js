@@ -3,9 +3,22 @@ import App from './App.vue'
 import router from './router'
 import YDUI from 'vue-ydui';
 import '@/plugin/axios'
+import 'vue-ydui/dist/ydui.rem.css';
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+import locale from 'element-ui/lib/locale/lang/en' // lang i18n
+import VueClipboard from 'vue-clipboard2'
 
+import * as filters from '@/filter';
+
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+});
+
+Vue.use(ElementUI, { locale })
 Vue.use(YDUI);
 Vue.use(router)
+Vue.use(VueClipboard)
 Vue.config.productionTip = false
 
 //permission
@@ -24,7 +37,6 @@ router.beforeEach((to, from, next) => {
     }
     else {
       sessionStorage.setItem('oldUrl', window.location.href);
-      window.location.href = Common.myUrl + 'login';
     }
   }
   else {

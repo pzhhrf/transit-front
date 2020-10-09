@@ -30,6 +30,7 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     proxy: 'http://127.0.0.1:18001'
+    // proxy: 'https://www.sharecloud.cc'
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that

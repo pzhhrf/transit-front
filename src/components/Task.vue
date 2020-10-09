@@ -6,9 +6,10 @@
                 <div class="textarea">
                     <textarea
                         placeholder="请黏贴文件页面所在的链接，多个链接请隔行添加，不超过5个"
+                        v-model="param.url"
                     ></textarea>
                 </div>
-                <div class="btn">提取链接</div>
+                <div class="btn" @click="parseUrl">提取链接</div>
             </div>
             <div class="in_02">
                 近期速方云增加了对
@@ -28,47 +29,67 @@
             <div class="in_05">
                 <div class="title">
                     <div class="span">文件提取列表</div>
-                    <div class="txt">提取完毕自动添加到中转队列</div>
-                    <div class="more">
-                        <yd-switch v-model="switch1"></yd-switch>
-                    </div>
                 </div>
-                <div class="content">
-                    <table cellspacing="1" cellpadding="1">
-                        <tr>
-                            <td>序号</td>
-                            <td>类型</td>
-                            <td>文件名称</td>
-                            <td>流量使用</td>
-                            <td>提取状态</td>
-                            <td>信息</td>
-                        </tr>
-                        <tr>
-                            <td>序号</td>
-                            <td>类型</td>
-                            <td>文件名称</td>
-                            <td>流量使用</td>
-                            <td>提取状态</td>
-                            <td>信息</td>
-                        </tr>
-                        <tr>
-                            <td>序号</td>
-                            <td>类型</td>
-                            <td>文件名称</td>
-                            <td>流量使用</td>
-                            <td>提取状态</td>
-                            <td>信息</td>
-                        </tr>
-                        <tr>
-                            <td>序号</td>
-                            <td>类型</td>
-                            <td>文件名称</td>
-                            <td>流量使用</td>
-                            <td>提取状态</td>
-                            <td>信息</td>
-                        </tr>
-                    </table>
-                </div>
+                <el-table
+                    :key="tableKey"
+                    v-loading="listLoading"
+                    :data="parseData"
+                    border
+                    fit
+                    highlight-current-row
+                    style="width: 100%"
+                >
+                    <el-table-column label="序号" align="center" width="180">
+                        <template slot-scope="{ row }">
+                            <span>{{ row.id }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="文件名" align="center">
+                        <template slot-scope="{ row }">
+                            <span>{{ row.name }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="文件大小" align="center">
+                        <template slot-scope="{ row }">
+                            <span>{{ row.size | formatSize }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                        label="提取状态"
+                        align="center"
+                        width="140"
+                    >
+                        <template slot-scope="{ row }">
+                            <span>{{
+                                row.status == 1 ? "提取成功" : "提取失败"
+                            }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                        label="原始路径"
+                        align="center"
+                        width="150"
+                    >
+                        <template slot-scope="{ row }">
+                            <span class="longtext">{{ row.url }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                        label="操作"
+                        align="center"
+                        class-name="small-padding fixed-width"
+                    >
+                        <template slot-scope="{ row }">
+                            <el-button
+                                type="primary"
+                                size="mini"
+                                v-if="row.status == 1"
+                                @click="handleAddTask(row)"
+                                >添加中转</el-button
+                            >
+                        </template>
+                    </el-table-column>
+                </el-table>
             </div>
             <div class="in_06">
                 <div class="title">
@@ -76,40 +97,65 @@
                     <div class="txt" @click="tips = true">重要提示</div>
                 </div>
                 <div class="content">
-                    <table cellspacing="1" cellpadding="1">
-                        <tr>
-                            <td>序号</td>
-                            <td>类型</td>
-                            <td>文件名称</td>
-                            <td>流量使用</td>
-                            <td>提取状态</td>
-                            <td>信息</td>
-                        </tr>
-                        <tr>
-                            <td>序号</td>
-                            <td>类型</td>
-                            <td>文件名称</td>
-                            <td>流量使用</td>
-                            <td>提取状态</td>
-                            <td>信息</td>
-                        </tr>
-                        <tr>
-                            <td>序号</td>
-                            <td>类型</td>
-                            <td>文件名称</td>
-                            <td>流量使用</td>
-                            <td>提取状态</td>
-                            <td>信息</td>
-                        </tr>
-                        <tr>
-                            <td>序号</td>
-                            <td>类型</td>
-                            <td>文件名称</td>
-                            <td>流量使用</td>
-                            <td>提取状态</td>
-                            <td>信息</td>
-                        </tr>
-                    </table>
+                    <el-table
+                        :key="tableKey"
+                        v-loading="listLoading"
+                        :data="downData"
+                        border
+                        fit
+                        highlight-current-row
+                        style="width: 100%"
+                    >
+                        <el-table-column label="序号" align="center">
+                            <template slot-scope="{ row }">
+                                <span>{{ row.id }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="文件名" align="center">
+                            <template slot-scope="{ row }">
+                                <span>{{ row.down_name }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="流量使用" align="center">
+                            <template slot-scope="{ row }">
+                                <span>{{ row.size | formatSize }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="转存进度" align="center">
+                            <template slot-scope="{ row }">
+                                <span>{{ row.status }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="转存时间" align="center">
+                            <template slot-scope="{ row }">
+                                <span>{{
+                                    row.complete_time | filterTime
+                                }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="过期时间" align="center">
+                            <template slot-scope="{ row }">
+                                <span>{{ row.expire_time | filterTime }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="下载地址" align="center">
+                            <template slot-scope="{ row }">
+                                <span
+                                    v-for="item in row.download_list"
+                                    :key="item.id"
+                                >
+                                    <el-button
+                                        type="primary"
+                                        size="mini"
+                                        v-clipboard:copy="item.msg"
+                                        v-clipboard:success="onCopySuc"
+                                        v-clipboard:error="onCopyErr"
+                                        >线路{{ item.id }}</el-button
+                                    >
+                                </span>
+                            </template>
+                        </el-table-column>
+                    </el-table>
                 </div>
             </div>
             <yd-popup v-model="tips" position="center" width="90%">
@@ -130,23 +176,116 @@
 <script>
 import Header from "@/components/Common/Header.vue";
 import request from "@/api/req.js";
+import { formatDate } from "@/filter";
 export default {
     name: "Task",
     components: {
         Header,
     },
+    filters: {
+        filterTime(str) {
+            if (str == 0) {
+                return "--";
+            } else {
+                return formatDate(str);
+            }
+        },
+    },
     data() {
         return {
+            tableKey: 0,
             accessToken: sessionStorage.getItem("accessToken"),
             switch1: false,
             tips: false,
+            param: {
+                url: "",
+            },
+            listLoading: false,
+            parseData: [],
+            downData: [],
+            timerList: [],
         };
     },
-    created() {},
+    created() {
+        this.getTasks();
+    },
+    beforeDestroy() {
+        this.timerList.forEach((element) => {
+            clearInterval(element);
+        });
+    },
     methods: {
-        getParseInfo() {},
-        addCar: function () {},
-        addLine: function () {},
+        parseUrl() {
+            var array = new Array();
+            array.push(this.param.url);
+            let dict = {
+                list: array,
+            };
+            request.parseUrl(dict).then((res) => {
+                if (res.code == 0) {
+                    this.parseData = res.data;
+                } else {
+                    alert("提取失败");
+                }
+            });
+        },
+        handleAddTask(row) {
+            let dict = {
+                id: row.id,
+            };
+            request.addTask(dict).then((res) => {
+                if (res.code == 0) {
+                    this.getTasks(row.id, false);
+                } else {
+                    alert("添加失败");
+                }
+            });
+        },
+        getTasks(id, speed) {
+            //获取任务
+            let dict = {
+                page: 1,
+                limit: 10,
+            };
+            request.getTasks(dict).then((res) => {
+                if (res.code == 0) {
+                    this.downData = res.data && res.data.content;
+                    if (speed) {
+                        this.getSpeedInfo(id);
+                    }
+                }
+            });
+        },
+        getSpeedInfo(id) {
+            var s = setInterval(() => {
+                request.getSpeed({ id }).then((res) => {
+                    if (res.code == 0) {
+                        this.dealDownData(id, res.data);
+                        if (res.data.complete == "1") {
+                            clearVal(s);
+                        }
+                    }
+                });
+            }, 1000);
+            this.timerList.push(s);
+        },
+        clearVal(sid) {
+            clearInterval(sid);
+            this.timerList = this.timerList.filter((item) => item !== sid);
+        },
+        dealDownData(id, speed) {
+            this.downData.forEach((item) => {
+                if (item.id == id) {
+                    item.speed = speed;
+                }
+            });
+        },
+        onCopySuc: (e) => {
+            alert("复制成功");
+        },
+        onCopyErr: (e) => {
+            alert("复制失败");
+        },
     },
 };
 </script>
@@ -335,5 +474,10 @@ export default {
     color: #333;
     font-size: 30px;
     cursor: pointer;
+}
+.longtext {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 </style>
