@@ -4,7 +4,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import Qs from 'qs'
 
-const AJAX_VM = new Vue({}); // 创建一个空白vue组件用于调用tip组件的方法
+// const AJAX_VM = new Vue({}); // 创建一个空白vue组件用于调用tip组件的方法
 
 let config = {
     baseURL: '',

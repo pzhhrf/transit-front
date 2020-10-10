@@ -1,5 +1,5 @@
 export function validEmail(value) {
-    const reg = /^([a-zA-Z0-9]+[-_\.]?)+@[a-zA-Z0-9]+\.[a-z]+$/;
+    const reg = /^([a-zA-Z0-9]+[-_.]?)+@[a-zA-Z0-9]+.[a-z]+$/;
     if (value == '' || value == undefined || value == null) {
         return false
     } else {
