@@ -31,31 +31,15 @@ Router.prototype.push = function push(location) {
  * all roles can be accessed
  */
 export const constantRoutes = [
-    {
-        path: '/login',
-        name: 'Login',
-        component: () => import('@/components/Login')
-    },
     // {
-    //     path: '/index',
-    //     name: 'Index',
-    //     component: () => import('@/components/Index'),
-    //     meta: {
-    //         requiresAuth: false
-    //     }
+    //     path: '/login',
+    //     name: 'Login',
+    //     component: () => import('@/components/Login')
     // },
     {
         path: '/help',
         name: 'Help',
         component: () => import('@/components/Help'),
-        meta: {
-            requiresAuth: false
-        }
-    },
-    {
-        path: '/knowledge',
-        name: 'Knowledge',
-        component: () => import('@/components/Knowledge'),
         meta: {
             requiresAuth: false
         }

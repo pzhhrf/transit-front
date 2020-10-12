@@ -4,13 +4,13 @@
       <div class="logo" @click="index"></div>
       <div class="menu">
         <div class="ul">
+          <div class="li" @click="index">
+            <a href="javascript:;">首页</a>
+          </div>
           <div class="li" @click="task">
             <a href="javascript:;">任务列表</a>
           </div>
           <div class="li" @click="help">
-            <a href="javascript:;">使用教程</a>
-          </div>
-          <div class="li" @click="knowledge">
             <a href="javascript:;">常见问题</a>
           </div>
           <div class="li" @click="contact">
@@ -103,6 +103,7 @@
 <script>
 import request from "@/api/req.js";
 import { validEmail, validPassword } from "@/utils/validate.js";
+import md5 from "js-md5";
 export default {
   name: "Header",
   data() {
@@ -138,11 +139,6 @@ export default {
         path: "/help",
       });
     },
-    knowledge() {
-      this.$router.push({
-        path: "/knowledge",
-      });
-    },
     contact() {
       var th = this;
       alert("contact");
@@ -175,7 +171,7 @@ export default {
       //注册
       let dict = {
         email: this.email,
-        password: this.password,
+        password: md5(this.password),
         code: this.code,
       };
       request.postReg(dict).then((res) => {
@@ -193,7 +189,7 @@ export default {
       //登陆
       let dict = {
         email: this.email,
-        password: this.password,
+        password: md5(this.password),
       };
       request.postLogin(dict).then((res) => {
         if (res.code == 0) {
@@ -245,7 +241,7 @@ export default {
 .header .mid .logo {
   width: 94px;
   height: 32px;
-  background: url(../../assets/logo.png) no-repeat center;
+  background: url(../../assets/logo1.png) no-repeat center;
   position: absolute;
   left: 0;
   top: 12px;
@@ -327,7 +323,7 @@ export default {
 .login .l01 {
   width: 100%;
   height: 100px;
-  background: url(../../assets/logo1.png) no-repeat center;
+  background: url(../../assets/logo1.png);
 }
 .login .l02 {
   width: 280px;
