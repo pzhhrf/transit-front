@@ -10,7 +10,7 @@ export default {
     postSendCode(params) {
         return Vue.axios.post(`/api/v1/gate/send/code`, JSON.stringify(params))
     },
-    forget() { //忘记密码
+    forget(params) { //忘记密码
         return Vue.axios.post(`/api/v1/gate/forget`, JSON.stringify(params))
     },
     postLogin(params) {

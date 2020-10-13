@@ -2,7 +2,7 @@
   <div class="index">
     <Header></Header>
     <div class="in_01">
-      <div class="in01_01">全球云数据中转服务</div>
+      <div class="in01_01">全球云数据中转</div>
       <div class="in01_02">
         <div class="a01 li"><img src="../assets/i01.png" /> 提取链接</div>
         <div class="l01 li"><img src="../assets/i04.png" /></div>
@@ -12,7 +12,9 @@
       </div>
       <div class="in01_03">
         <textarea
-          placeholder="请粘贴文件页面所在的链接，多个链接请隔行添加，不超过5个"
+          placeholder="请黏贴链接，多个链接隔行添加，不超过5个"
+          @click="parseUrl"
+          readonly
         >
         </textarea>
       </div>
@@ -20,15 +22,15 @@
       <div class="in01_05">支持的云名称</div>
     </div>
     <div class="in_02">
-      <div class="li01">
-        <div v-for="item in sptData" :key="item.id">
-          <div class="line">
+      <template v-for="items in sptData">
+        <div class="li01" :key="items.id">
+          <div class="line" v-for="item in items" :key="item.id">
             <div class="img"><img :src="item.icon" /></div>
             <div class="title">{{ item.display }}</div>
             <div class="des">{{ item.example }}</div>
           </div>
         </div>
-      </div>
+      </template>
     </div>
     <div class="in_04">Copyright 2020</div>
   </div>
@@ -55,7 +57,7 @@ export default {
     getClouds() {
       request.getSupportCloud().then((res) => {
         if (res.code == 0) {
-          this.sptData = res.data;
+          this.sptData = this.slickArrFn(res.data);
         }
       });
     },
@@ -63,6 +65,16 @@ export default {
       this.$router.push({
         path: "/task",
       });
+    },
+    slickArrFn(array) {
+      var result = [];
+      var size = 6;
+      for (var x = 0; x < Math.ceil(array.length / size); x++) {
+        var start = x * size;
+        var end = start + size;
+        result.push(array.slice(start, end));
+      }
+      return result;
     },
   },
 };
@@ -163,13 +175,13 @@ export default {
 }
 .in01_05 {
   width: 950px;
-  height: 240px;
+  height: 120px;
   margin: 0 auto;
   text-align: center;
   line-height: 240px;
   font-size: 40px;
   color: #142655;
-  margin-top: 100px;
+  margin-top: 30px;
 }
 .in_02 {
   width: 1002px;
@@ -179,7 +191,7 @@ export default {
 }
 .in_02 .li01 {
   width: 312px;
-  height: 548px;
+  height: 380px;
   float: left;
   margin: 0 10px;
   background: #fff;
@@ -206,7 +218,7 @@ export default {
 .in_02 .li01 .line .title {
   width: 230px;
   height: 30px;
-  line-height: 30px;
+  line-height: 20px;
   position: absolute;
   left: 72px;
   top: 6px;
@@ -215,11 +227,11 @@ export default {
 }
 .in_02 .li01 .line .des {
   width: 230px;
-  height: 30px;
-  line-height: 30px;
+  height: 20px;
+  line-height: 20px;
   position: absolute;
   left: 72px;
-  top: 24px;
+  top: 30px;
   color: #8992aa;
   font-size: 12px;
 }

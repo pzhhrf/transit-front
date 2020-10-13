@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import axios from 'axios'
 import Qs from 'qs'
+import { CheckLogin } from "@/utils/validate.js";
 
 // const AJAX_VM = new Vue({}); // 创建一个空白vue组件用于调用tip组件的方法
 
@@ -14,12 +15,12 @@ let config = {
     timeout: 1000 * 30
     // withCredentials: true, // Check cross-site Access-Control
 }
-let uid = localStorage.getItem("uid")
-let token = localStorage.getItem("token")
 
-if (uid !== "" && uid != null) {
-    config.headers["C-USER"] = uid
-    config.headers["C-TOKEN"] = token
+var info = CheckLogin()
+
+if (info) {
+    config.headers["C-USER"] = info.uid
+    config.headers["C-TOKEN"] = info.token
 }
 if (process.env.NODE_ENV === 'development') {
     config.headers.cookieDomain = location.hostname
@@ -38,8 +39,6 @@ _axios.interceptors.request.use(
         // Do something with request error
         if (error.request.status === 401) {
             window.location.href = window.location.origin + "/#/login";
-            localStorage.setItem("is_login", "false");
-            localStorage.removeItem("uid");
             return;
         }
         return Promise.reject(error)
@@ -66,11 +65,8 @@ _axios.interceptors.response.use(
     function (error) {
         if (error.response && error.response.status === 401) {
             window.location.href = window.location.origin + "/#/login";
-            localStorage.setItem("is_login ", "false");
-            localStorage.removeItem("uid");
             return;
         }
-        console.log("error=====", error)
         return Promise.resolve({ code: error.response.code, message: error.response.message || '出错了' })
     }
 )

@@ -104,6 +104,8 @@
 import request from "@/api/req.js";
 import { validEmail, validPassword } from "@/utils/validate.js";
 import md5 from "js-md5";
+import Cookies from "js-cookie";
+import moment from "moment";
 export default {
   name: "Header",
   data() {
@@ -203,9 +205,9 @@ export default {
       });
     },
     setLoginData(data) {
-      localStorage.setItem("uid", data.uid);
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("email", data.email);
+      Cookies.set("userinfo", JSON.stringify(data), {
+        expires: new Date(moment.unix(data.expire)),
+      });
     },
     getCode() {
       //发送验证码

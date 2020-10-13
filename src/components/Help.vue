@@ -1,3 +1,4 @@
+/*eslint-disable*/
 <template>
   <div class="index">
     <Header></Header>
@@ -16,28 +17,24 @@
           appname
         }}首页进行链接检测，检测成功(提示成功或添加至文件提取列表)即可中转。
       </div>
-      <div class="in_02">四、流量是否通用</div>
-      <div class="in_03">通用</div>
-      <div class="in_02">五、文件有效期</div>
+      <div class="in_02">四、文件有效期</div>
       <div class="in_03">
         文件有效期：48小时，无下载IP和下载次数限制。<br />
         流量有效期：永久有效，用完为止
       </div>
-      <div class="in_02">六、流量是否支持累加</div>
-      <div class="in_03">支持。</div>
-      <div class="in_02">七、文件转存失败</div>
+      <div class="in_02">五、文件转存失败</div>
       <div class="in_03">文件转存流量将自动返回</div>
-      <div class="in_02">八、文件损坏、被加密或无法使用</div>
+      <div class="in_02">六、文件损坏、被加密或无法使用</div>
       <div class="in_03">
         {{ appname }}不会对中转的数据任何改动。用户可自行校验哈希值证明。<br />
         关于文件的准确性、有效性、真实度只能用户自己甄别。<br />
         此外，由于文件是由网络用户上传，若有解压密码等请联系咨询文件提供者，本站不可能知晓。
       </div>
-      <div class="in_02">九、下载速度说明</div>
+      <div class="in_02">七、下载速度说明</div>
       <div class="in_03">
         {{ appname }} 服务器在海外,我们尽可能多的提供下载地址来加速内容的下载.
       </div>
-      <div class="in_02">十、下载工具推荐</div>
+      <div class="in_02">八、下载工具推荐</div>
       <div class="in_03">
         Windows系统推荐工具：<br />
         <a href="javascript:;">IDM下载</a>　<a href="javascript:;">NDM下载</a
@@ -71,7 +68,7 @@ export default {
   },
   data() {
     return {
-      accessToken: sessionStorage.getItem("accessToken"),
+      appname: "Sharecloud",
     };
   },
   created() {},
