@@ -2,7 +2,7 @@
   <div class="index">
     <Header></Header>
     <div class="in_01">
-      <div class="in01_01">全球云数据中转</div>
+      <div class="in01_01">全球云支持</div>
       <div class="in01_02">
         <div class="a01 li"><img src="../assets/i01.png" /> 提取链接</div>
         <div class="l01 li"><img src="../assets/i04.png" /></div>
@@ -12,14 +12,14 @@
       </div>
       <div class="in01_03">
         <textarea
-          placeholder="请黏贴链接，多个链接隔行添加，不超过5个"
+          placeholder="黏贴链接，开始检测..."
           @click="parseUrl"
           readonly
         >
         </textarea>
       </div>
       <div class="in01_04" @click="parseUrl">提取链接</div>
-      <div class="in01_05">支持的云名称</div>
+      <div class="in01_05">支持的云列表</div>
     </div>
     <div class="in_02">
       <template v-for="items in sptData">

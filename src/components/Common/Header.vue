@@ -13,8 +13,8 @@
           <div class="li" @click="help">
             <a href="javascript:;">常见问题</a>
           </div>
-          <div class="li" @click="contact">
-            <a href="javascript:;">联系我们</a>
+          <div class="li" @click="buys">
+            <a href="javascript:;">购买服务</a>
           </div>
         </div>
       </div>
@@ -141,9 +141,10 @@ export default {
         path: "/help",
       });
     },
-    contact() {
-      var th = this;
-      alert("contact");
+    buys() {
+      this.$router.push({
+        path: "/buy",
+      });
     },
     index() {
       this.$router.push({
