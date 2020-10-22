@@ -11,6 +11,9 @@ import VueClipboard from 'vue-clipboard2'
 
 import * as filters from '@/filter';
 
+import Toast from '@/plugin/toast'
+
+Vue.use(Toast)
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 });
@@ -19,7 +22,6 @@ Vue.use(ElementUI, { locale })
 Vue.use(YDUI);
 Vue.use(router)
 Vue.use(VueClipboard)
-Vue.config.productionTip = false
 
 //permission
 router.beforeEach((to, from, next) => {
