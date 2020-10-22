@@ -11,8 +11,9 @@ import VueClipboard from 'vue-clipboard2'
 
 import * as filters from '@/filter';
 
-import '@/plugin/toast'
+import Toast from '@/plugin/toast'
 
+Vue.use(Toast)
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 });
