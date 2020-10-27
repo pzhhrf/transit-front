@@ -1,6 +1,13 @@
 <template>
     <div class="index">
         <Header></Header>
+        <vue-loading
+            v-if="isLoading"
+            type="spin"
+            color="#2c3e50"
+            :size="{ width: '50px', height: '50px' }"
+        ></vue-loading>
+
         <div class="in">
             <div class="in_01">
                 <div class="textarea">
@@ -186,6 +193,7 @@ export default {
     },
     data() {
         return {
+            isLoading: false,
             tableKey: 0,
             accessToken: sessionStorage.getItem("accessToken"),
             switch1: false,
@@ -241,7 +249,9 @@ export default {
                 page: 1,
                 limit: 10,
             };
+            this.isLoading = true;
             request.getTasks(dict).then((res) => {
+                this.isLoading = false;
                 if (res.code == 0) {
                     this.downData = this.dealDownData(
                         res.data && res.data.content

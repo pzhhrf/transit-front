@@ -1,5 +1,11 @@
 <template>
     <div class="header">
+        <vue-loading
+            v-if="isLoading"
+            type="spin"
+            color="#d9544e"
+            :size="{ width: '50px', height: '50px' }"
+        ></vue-loading>
         <div class="mid">
             <div class="logo" @click="index"></div>
             <div class="menu">
@@ -18,12 +24,16 @@
                     </div>
                 </div>
             </div>
-            <div v-if="CheckLogin() == undefined " class="btns">
+            <div v-if="loginStatus()" class="btns">
                 <div class="loginBtn" @click="login">登录</div>
                 <div class="reg" @click="reg">注册</div>
             </div>
             <div v-else>
-                <div>登陆成功:{{}}</div>
+                <div>
+                    登陆成功: 用户名:{{ email }} 今日剩余流量:{{
+                        today_bandwidth
+                    }}
+                </div>
             </div>
         </div>
         <yd-popup v-model="showLogin" position="center" width="90%">
@@ -126,8 +136,10 @@ import moment from "moment";
 import { CheckLogin } from "@/utils/validate.js";
 export default {
     name: "Header",
+    components: {},
     data() {
         return {
+            isLoading: false,
             showLogin: false,
             showReg: false,
             email: "",
@@ -135,8 +147,9 @@ export default {
             password2: "",
             code: "",
             expire_time: "",
-            left_flow:"",
-            uid:"",
+            left_flow: "",
+            uid: "",
+            today_bandwidth: "",
             rules: {
                 email: [
                     { required: true, message: "请输入邮箱" },
@@ -152,13 +165,17 @@ export default {
     props: [],
     created() {
         let info = CheckLogin();
-        if (info != undefined){
+        if (info != undefined) {
             this.uid = info.uid;
             this.email = info.email;
             this.getUserInfo();
         }
     },
     methods: {
+        loginStatus() {
+            let info = CheckLogin();
+            return info == undefined;
+        },
         task() {
             this.$router.push({
                 path: "/task",
@@ -252,11 +269,13 @@ export default {
                 }
             });
         },
-        getUserInfo(){
-            request.getUserStatus().then((res)= >{
-                
-            })
-        }
+        getUserInfo() {
+            request.getUserStatus().then((res) => {
+                if (res.code == 0) {
+                    this.today_bandwidth = res.data.today_bandwidth;
+                }
+            });
+        },
     },
 };
 </script>

@@ -1,5 +1,4 @@
 import Toasts from '../components/Toasts'
-import Vue from 'vue'
 const Toast = {};
 
 Toast.install = function (Vue) {
