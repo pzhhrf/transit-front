@@ -28,11 +28,11 @@
                     highlight-current-row
                     style="width: 100%"
                 >
-                    <el-table-column label="序号" align="center" width="180">
+                    <!-- <el-table-column label="序号" align="center" width="180">
                         <template slot-scope="{ row }">
                             <span>{{ row.id }}</span>
                         </template>
-                    </el-table-column>
+                    </el-table-column> -->
                     <el-table-column label="文件名" align="center">
                         <template slot-scope="{ row }">
                             <span>{{ row.name }}</span>
@@ -94,11 +94,11 @@
                         highlight-current-row
                         style="width: 100%"
                     >
-                        <el-table-column label="序号" align="center">
+                        <!-- <el-table-column label="序号" align="center">
                             <template slot-scope="{ row }">
                                 <span>{{ row.id }}</span>
                             </template>
-                        </el-table-column>
+                        </el-table-column> -->
                         <el-table-column label="文件名" align="center">
                             <template slot-scope="{ row }">
                                 <span>{{ row.down_name }}</span>

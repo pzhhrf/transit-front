@@ -18,9 +18,12 @@
                     </div>
                 </div>
             </div>
-            <div class="btns">
+            <div v-if="CheckLogin() == undefined " class="btns">
                 <div class="loginBtn" @click="login">登录</div>
                 <div class="reg" @click="reg">注册</div>
+            </div>
+            <div v-else>
+                <div>登陆成功:{{}}</div>
             </div>
         </div>
         <yd-popup v-model="showLogin" position="center" width="90%">
@@ -120,6 +123,7 @@ import { validEmail, validPassword } from "@/utils/validate.js";
 import md5 from "js-md5";
 import Cookies from "js-cookie";
 import moment from "moment";
+import { CheckLogin } from "@/utils/validate.js";
 export default {
     name: "Header",
     data() {
@@ -130,6 +134,9 @@ export default {
             password: "",
             password2: "",
             code: "",
+            expire_time: "",
+            left_flow:"",
+            uid:"",
             rules: {
                 email: [
                     { required: true, message: "请输入邮箱" },
@@ -143,7 +150,14 @@ export default {
         };
     },
     props: [],
-    created() {},
+    created() {
+        let info = CheckLogin();
+        if (info != undefined){
+            this.uid = info.uid;
+            this.email = info.email;
+            this.getUserInfo();
+        }
+    },
     methods: {
         task() {
             this.$router.push({
@@ -238,6 +252,11 @@ export default {
                 }
             });
         },
+        getUserInfo(){
+            request.getUserStatus().then((res)= >{
+                
+            })
+        }
     },
 };
 </script>
