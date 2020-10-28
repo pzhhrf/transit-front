@@ -50,16 +50,6 @@ _axios.interceptors.request.use(
 _axios.interceptors.response.use(
     function (response) {
         let data = response.data
-        if (data.code !== 0 && !response.config.hideTip) {
-            // let errorMessage = data.msg || data.message;
-            // if (errorMessage) {
-            //     AJAX_VM.$message({
-            //         message: errorMessage,
-            //         type: 'error'
-            //     })
-            // }
-            return Promise.reject(data)
-        }
         return Promise.resolve(data)
     },
     // eslint-disable-next-line

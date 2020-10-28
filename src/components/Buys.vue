@@ -49,7 +49,7 @@ export default {
                             path: "/task",
                         });
                     } else {
-                        this.$message(res.message);
+                        this.$message(res.msg);
                     }
                 })
                 .catch((e) => {
