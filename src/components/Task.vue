@@ -11,17 +11,13 @@
                 </div>
                 <div class="btn" @click="parseUrl">提取链接</div>
             </div>
-            <div class="in_03">
-                <!-- 客服工作时间： 周一至周五早上09:30至晚上23:00,
-                周末10:00至22:00,其他时段请QQ留言，客服会尽快回复 -->
-            </div>
             <div class="in_05">
                 <div class="title">
                     <div class="span">文件提取列表</div>
                 </div>
                 <el-table
                     :key="tableKey"
-                    v-loading="listLoading"
+                    v-loading="isShowLoading"
                     :data="parseData"
                     border
                     fit
@@ -29,11 +25,6 @@
                     style="width: 100%"
                     empty-text=" "
                 >
-                    <!-- <el-table-column label="序号" align="center" width="180">
-                        <template slot-scope="{ row }">
-                            <span>{{ row.id }}</span>
-                        </template>
-                    </el-table-column> -->
                     <el-table-column label="文件名" align="center">
                         <template slot-scope="{ row }">
                             <span>{{ row.name }}</span>
@@ -96,11 +87,6 @@
                         style="width: 100%"
                         empty-text=" "
                     >
-                        <!-- <el-table-column label="序号" align="center">
-                            <template slot-scope="{ row }">
-                                <span>{{ row.id }}</span>
-                            </template>
-                        </el-table-column> -->
                         <el-table-column label="文件名" align="center">
                             <template slot-scope="{ row }">
                                 <span>{{ row.down_name }}</span>
@@ -190,12 +176,9 @@ export default {
         return {
             isShowLoading: false,
             tableKey: 0,
-            accessToken: sessionStorage.getItem("accessToken"),
-            switch1: false,
             param: {
                 url: "",
             },
-            listLoading: false,
             parseData: [],
             downData: [],
             timerList: [],
@@ -218,13 +201,21 @@ export default {
             let dict = {
                 list: array,
             };
-            request.parseUrl(dict).then((res) => {
-                if (res.code == 0) {
-                    this.parseData = res.data;
-                } else {
-                    alert("提取失败");
-                }
-            });
+            this.isShowLoading = true;
+            request
+                .parseUrl(dict)
+                .then((res) => {
+                    this.isShowLoading = false;
+                    if (res.code == 0) {
+                        this.parseData = res.data;
+                    } else {
+                        this.$message("提取失败");
+                    }
+                })
+                .catch((e) => {
+                    console.log(e);
+                    this.isShowLoading = false;
+                });
         },
         handleAddTask(row) {
             let dict = {
@@ -234,7 +225,7 @@ export default {
                 if (res.code == 0) {
                     this.getTasks();
                 } else {
-                    alert("添加失败");
+                    this.$message("添加任务失败");
                 }
             });
         },
@@ -245,14 +236,19 @@ export default {
                 limit: 10,
             };
             this.isShowLoading = true;
-            request.getTasks(dict).then((res) => {
-                this.isShowLoading = false;
-                if (res.code == 0) {
-                    this.downData = this.dealDownData(
-                        res.data && res.data.content
-                    );
-                }
-            });
+            request
+                .getTasks(dict)
+                .then((res) => {
+                    this.isShowLoading = false;
+                    if (res.code == 0 && res.data.content) {
+                        this.downData = this.dealDownData(res.data.content);
+                    }
+                })
+                .catch((e) => {
+                    console.log(e);
+                    this.isShowLoading = false;
+                    this.$message("访问服务失败");
+                });
         },
         getSpeedInfo(id) {
             var s = setInterval(() => {
@@ -260,6 +256,7 @@ export default {
                     if (res.code == 0) {
                         if (res.data.complete == "1") {
                             this.clearVal(s);
+                            this.getTasks();
                         } else {
                             let info =
                                 "速度:" +
@@ -275,11 +272,14 @@ export default {
             this.timerList.push(s);
         },
         dealTable(id, info) {
-            this.downData = this.downData.forEach((item) => {
+            this.downData.forEach((item, index) => {
                 if (item.id == id) {
-                    item.speedinfo = info;
+                    this.$set(
+                        this.downData,
+                        index,
+                        Object.assign(item, { speedinfo: info })
+                    );
                 }
-                return item;
             });
         },
         clearVal(sid) {
@@ -287,20 +287,18 @@ export default {
             this.timerList = this.timerList.filter((item) => item !== sid);
         },
         dealDownData(tables) {
-            if (tables) {
-                tables.forEach((item) => {
-                    if (item.status == 2 || item.status == 3) {
-                        this.getSpeedInfo(item.id);
-                    }
-                });
-                return tables;
-            }
+            tables.forEach((item) => {
+                if (item.status == 2 || item.status == 3) {
+                    this.getSpeedInfo(item.id);
+                }
+            });
+            return tables;
         },
         onCopySuc: () => {
-            alert("复制成功");
+            this.$message("复制成功");
         },
         onCopyErr: () => {
-            alert("复制失败");
+            this.$message("复制失败");
         },
     },
 };
