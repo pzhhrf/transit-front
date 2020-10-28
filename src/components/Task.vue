@@ -1,13 +1,6 @@
 <template>
     <div class="index">
         <Header></Header>
-        <vue-loading
-            v-if="isLoading"
-            type="spin"
-            color="#2c3e50"
-            :size="{ width: '50px', height: '50px' }"
-        ></vue-loading>
-
         <div class="in">
             <div class="in_01">
                 <div class="textarea">
@@ -34,6 +27,7 @@
                     fit
                     highlight-current-row
                     style="width: 100%"
+                    empty-text=" "
                 >
                     <!-- <el-table-column label="序号" align="center" width="180">
                         <template slot-scope="{ row }">
@@ -94,12 +88,13 @@
                 <div class="content">
                     <el-table
                         :key="tableKey"
-                        v-loading="listLoading"
+                        v-loading="isShowLoading"
                         :data="downData"
                         border
                         fit
                         highlight-current-row
                         style="width: 100%"
+                        empty-text=" "
                     >
                         <!-- <el-table-column label="序号" align="center">
                             <template slot-scope="{ row }">
@@ -193,7 +188,7 @@ export default {
     },
     data() {
         return {
-            isLoading: false,
+            isShowLoading: false,
             tableKey: 0,
             accessToken: sessionStorage.getItem("accessToken"),
             switch1: false,
@@ -249,9 +244,9 @@ export default {
                 page: 1,
                 limit: 10,
             };
-            this.isLoading = true;
+            this.isShowLoading = true;
             request.getTasks(dict).then((res) => {
-                this.isLoading = false;
+                this.isShowLoading = false;
                 if (res.code == 0) {
                     this.downData = this.dealDownData(
                         res.data && res.data.content

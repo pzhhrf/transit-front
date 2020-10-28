@@ -45,8 +45,8 @@ export const constantRoutes = [
         }
     },
     {
-        path: '/buy',
-        name: 'Buys',
+        path: '/payment',
+        name: 'Payment',
         component: () => import('@/components/Buys'),
         meta: {
             requiresAuth: false

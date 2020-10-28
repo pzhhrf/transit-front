@@ -3,13 +3,24 @@
   <div class="index">
     <Header></Header>
     <div class="in">
-      
+      <el-form :model="pays">
+        <el-form-item label="兑换码">
+          <el-input v-model="pays.code"></el-input>
+        </el-form-item>
+        <el-button
+          type="primary"
+          @click="activeRedeem(pays)"
+          :loading="isShowloading"
+          >兑换流量</el-button
+        >
+      </el-form>
     </div>
   </div>
 </template>
 
 <script>
 import Header from "@/components/Common/Header.vue";
+import request from "@/api/req.js";
 export default {
   name: "Index",
   components: {
@@ -17,16 +28,34 @@ export default {
   },
   data() {
     return {
+      isShowloading: false,
+      pays: {
+        code: "",
+      },
       appname: "Sharecloud",
     };
   },
   created() {},
   methods: {
-    index: function () {
-      var th = this;
-      th.$router.push({
-        path: "/",
-      });
+    activeRedeem(rows) {
+      this.isShowloading = true;
+      request
+        .addRedeem(rows)
+        .then((res) => {
+          this.isShowloading = false;
+          if (res.code == 0) {
+            this.$message("兑换成功!");
+            this.$router.push({
+              path: "/task",
+            });
+          } else {
+            this.$message(res.message);
+          }
+        })
+        .catch((res) => {
+          this.isShowloading = false;
+          this.$message("请求服务失败");
+        });
     },
   },
 };

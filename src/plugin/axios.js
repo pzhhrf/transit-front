@@ -16,19 +16,20 @@ let config = {
     // withCredentials: true, // Check cross-site Access-Control
 }
 
-var info = CheckLogin()
-
-if (info) {
-    config.headers["C-USER"] = info.uid
-    config.headers["C-TOKEN"] = info.token
-}
 if (process.env.NODE_ENV === 'development') {
     config.headers.cookieDomain = location.hostname
 }
 const _axios = axios.create(config)
 
 _axios.interceptors.request.use(
+
     function (config) {
+        // Do something before request is sent
+        var info = CheckLogin()
+        if (info) {
+            config.headers["C-USER"] = info.uid
+            config.headers["C-TOKEN"] = info.token
+        }
         // Do something before request is sent
         config.paramsSerializer = function (params) {
             return Qs.stringify(params, { arrayFormat: 'repeat' })
