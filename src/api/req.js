@@ -16,6 +16,9 @@ export default {
     postLogin(params) {
         return Vue.axios.post(`/api/v1/gate/login`, JSON.stringify(params))
     },
+    getUserStatus() { //获取用户状态
+        return Vue.axios.get(`/api/v1/gate/user/status`)
+    },
     parseUrl(params) {
         return Vue.axios.post(`/api/v1/gate/parse`, JSON.stringify(params))
     },

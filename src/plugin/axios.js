@@ -16,19 +16,20 @@ let config = {
     // withCredentials: true, // Check cross-site Access-Control
 }
 
-var info = CheckLogin()
-
-if (info) {
-    config.headers["C-USER"] = info.uid
-    config.headers["C-TOKEN"] = info.token
-}
 if (process.env.NODE_ENV === 'development') {
     config.headers.cookieDomain = location.hostname
 }
 const _axios = axios.create(config)
 
 _axios.interceptors.request.use(
+
     function (config) {
+        // Do something before request is sent
+        var info = CheckLogin()
+        if (info) {
+            config.headers["C-USER"] = info.uid
+            config.headers["C-TOKEN"] = info.token
+        }
         // Do something before request is sent
         config.paramsSerializer = function (params) {
             return Qs.stringify(params, { arrayFormat: 'repeat' })
@@ -49,16 +50,6 @@ _axios.interceptors.request.use(
 _axios.interceptors.response.use(
     function (response) {
         let data = response.data
-        if (data.code !== 0 && !response.config.hideTip) {
-            // let errorMessage = data.msg || data.message;
-            // if (errorMessage) {
-            //     AJAX_VM.$message({
-            //         message: errorMessage,
-            //         type: 'error'
-            //     })
-            // }
-            return Promise.reject(data)
-        }
         return Promise.resolve(data)
     },
     // eslint-disable-next-line

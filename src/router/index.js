@@ -31,15 +31,23 @@ Router.prototype.push = function push(location) {
  * all roles can be accessed
  */
 export const constantRoutes = [
-    // {
-    //     path: '/login',
-    //     name: 'Login',
-    //     component: () => import('@/components/Login')
-    // },
+    {
+        path: '/login',
+        name: 'Login',
+        component: () => import('@/components/Login')
+    },
     {
         path: '/help',
         name: 'Help',
         component: () => import('@/components/Help'),
+        meta: {
+            requiresAuth: false
+        }
+    },
+    {
+        path: '/payment',
+        name: 'Payment',
+        component: () => import('@/components/Buys'),
         meta: {
             requiresAuth: false
         }
@@ -71,7 +79,7 @@ export const constantRoutes = [
 ]
 
 const createRouter = () => new Router({
-    // mode: 'history', // require service support
+    mode: 'history', // require service support
     scrollBehavior: () => ({ y: 0 }),
     routes: constantRoutes
 })

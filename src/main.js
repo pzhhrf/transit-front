@@ -8,12 +8,9 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/en' // lang i18n
 import VueClipboard from 'vue-clipboard2'
-
 import * as filters from '@/filter';
 
-import Toast from '@/plugin/toast'
 
-Vue.use(Toast)
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 });
