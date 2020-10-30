@@ -1,4 +1,4 @@
-<template>
+<template lang="pug">
     <div class="header">
         <div class="mid">
             <div class="logo" @click="index"></div>
@@ -21,27 +21,25 @@
                     </div>
                 </div>
             </div>
-            <vue-loading
+           
+            vue-loading(
                 v-if="isLoading"
                 type="spin"
                 color="#d9544e"
                 :size="{ width: '50px', height: '50px' }"
-            ></vue-loading>
+            )
             <div v-if="loginStatus()" class="btns">
                 <div class="loginBtn" @click="login">登录</div>
                 <div class="reg" @click="reg">注册</div>
             </div>
-            <div v-else>
-                <div>
-                    登陆成功: 用户名:{{ email }} 今日剩余流量:{{
-                        today_bandwidth
-                    }}
-                </div>
+            <div v-else class="usernames">
+                <div> 欢迎:{{ email }}</div>
+                <div> 今日剩余流量:{{ today_bandwidth }} </div>
             </div>
         </div>
         <yd-popup v-model="showLogin" position="center" width="90%">
             <div class="login" ref="form-login">
-                <div class="l01"></div>
+                //- <div class="l01"></div>
                 <div class="l02">
                     <div class="t01">
                         <div class="span">登录</div>
@@ -51,28 +49,26 @@
                         <div class="img">
                             <img src="../../assets/i06.png" />
                         </div>
-                        <input
+                        input(
                             type="text"
                             v-model="email"
                             placeholder="请输入邮箱"
-                        />
+                        )
                     </div>
                     <div class="t04">密码</div>
                     <div class="t05" prop="password">
                         <div class="img">
                             <img src="../../assets/i07.png" />
                         </div>
-                        <input
+                        input(
                             type="password"
                             v-model="password"
                             placeholder="请输入密码"
-                        />
+                        )
                     </div>
                     <div class="t06" @click="addLogin">登录</div>
                     <div class="t07">
-                        <a href="javascript:;" @click="tos" class="a01"
-                            >服务条款</a
-                        >
+                        a(href="javascript:;" @click="tos" class="a01") 服务条款
                         <a href="" class="a02">忘记密码</a>
                     </div>
                 </div>
@@ -82,41 +78,37 @@
 
         <yd-popup v-model="showReg" position="center" width="90%">
             <div class="login reg" ref="form-reg">
-                <div class="l01"></div>
+                //- <div class="l01"></div>
                 <div class="l02">
                     <div class="t02">邮箱</div>
                     <div class="t03">
-                        <input
+                        input(
                             type="text"
                             v-model="email"
                             placeholder="请输入邮箱"
-                        />
+                        )
                     </div>
                     <div class="t02">验证码</div>
                     <div class="t03">
-                        <input
-                            type="text"
-                            v-model="code"
-                            placeholder="验证码"
-                        />
+                        <input type="text" v-model="code" placeholder="验证码"/>
                         <span @click="getCode">获取验证码</span>
                     </div>
                     <div class="t04">密码</div>
                     <div class="t05">
-                        <input
+                        input(
                             type="password"
                             v-model="password"
                             name=""
                             placeholder="请输入密码"
-                        />
+                        )
                     </div>
                     <div class="t04">确认密码</div>
                     <div class="t05">
-                        <input
+                        input(
                             type="password"
                             v-model="password2"
                             placeholder="请输入密码"
-                        />
+                        )
                     </div>
                     <div class="t06" @click="addReg">注册</div>
                     <div class="t07">
@@ -286,7 +278,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style scoped lang="scss">
 .header {
     width: 100%;
     height: 56px;
@@ -306,6 +298,7 @@ export default {
     left: 0;
     top: 12px;
     cursor: pointer;
+    background-size: contain;
 }
 .header .mid .menu {
     /* width: 520px; */
@@ -338,6 +331,11 @@ export default {
     position: absolute;
     right: 0;
     top: 0;
+}
+.header .mid .usernames {
+    position: absolute;
+    right: 12px;
+    top: 9px;
 }
 .header .mid .btns .loginBtn {
     width: 90px;
@@ -384,6 +382,9 @@ export default {
     width: 100%;
     height: 100px;
     background: url(../../assets/logo1.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 .login .l02 {
     width: 280px;
@@ -416,6 +417,14 @@ export default {
     width: 280px;
     height: 35px;
     position: relative;
+    span {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgb(70, 110, 245);
+        cursor: pointer;
+    }
 }
 .login .l02 .t03 input {
     width: 240px;
@@ -423,6 +432,7 @@ export default {
     padding: 2px 10px 2px 30px;
     border: 1px solid #f0f0f0;
 }
+
 .login .l02 .t03 .img {
     width: 23px;
     height: 23px;
