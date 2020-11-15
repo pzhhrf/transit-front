@@ -58,7 +58,8 @@ _axios.interceptors.response.use(
             window.location.href = window.location.origin + "/#/login";
             return;
         }
-        return Promise.resolve({ code: error.response.code, message: error.response.message || '出错了' })
+        return Promise.reject(error);
+        // return Promise.resolve({ code: error.response.code, message: error.response.message || '出错了' })
     }
 )
 

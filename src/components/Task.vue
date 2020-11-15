@@ -17,7 +17,7 @@
                 </div>
                 <el-table
                     :key="tableKey"
-                    v-loading="isShowLoading"
+                    v-loading="isShowLoadingParse"
                     :data="parseData"
                     border
                     fit
@@ -132,6 +132,14 @@
                             </template>
                         </el-table-column>
                     </el-table>
+                    <el-pagination
+                        @current-change="handleCurrentChange"
+                        :current-page="currentPage"
+                        :page-size="pagesize"
+                        layout="prev, pager, next"
+                        :total="total"
+                    >
+                    </el-pagination>
                 </div>
             </div>
         </div>
@@ -174,6 +182,7 @@ export default {
     },
     data() {
         return {
+            isShowLoadingParse: false,
             isShowLoading: false,
             tableKey: 0,
             param: {
@@ -182,6 +191,9 @@ export default {
             parseData: [],
             downData: [],
             timerList: [],
+            currentPage: 1,
+            pagesize: 10,
+            total: 0,
         };
     },
     created() {
@@ -195,17 +207,24 @@ export default {
         });
     },
     methods: {
+        handleSizeChange(size) {
+            this.pagesize = size;
+        },
+        handleCurrentChange(current) {
+            this.currentPage = current;
+            this.getTasks();
+        },
         parseUrl() {
             var array = new Array();
             array.push(this.param.url);
             let dict = {
                 list: array,
             };
-            this.isShowLoading = true;
+            this.isShowLoadingParse = true;
             request
                 .parseUrl(dict)
                 .then((res) => {
-                    this.isShowLoading = false;
+                    this.isShowLoadingParse = false;
                     if (res.code == 0) {
                         this.parseData = res.data;
                     } else {
@@ -214,7 +233,7 @@ export default {
                 })
                 .catch((e) => {
                     console.log(e);
-                    this.isShowLoading = false;
+                    this.isShowLoadingParse = false;
                 });
         },
         handleAddTask(row) {
@@ -230,10 +249,9 @@ export default {
             });
         },
         getTasks() {
-            //获取任务
             let dict = {
-                page: 1,
-                limit: 10,
+                page: this.currentPage,
+                limit: this.pagesize,
             };
             this.isShowLoading = true;
             request
@@ -241,6 +259,7 @@ export default {
                 .then((res) => {
                     this.isShowLoading = false;
                     if (res.code == 0 && res.data.content) {
+                        this.total = res.data.total;
                         this.downData = this.dealDownData(res.data.content);
                     }
                 })
@@ -261,7 +280,7 @@ export default {
                             let info =
                                 "速度:" +
                                 res.data.speed +
-                                " 进度:" +
+                                "<br>进度:" +
                                 res.data.percent +
                                 "%";
                             this.dealTable(id, info);
@@ -294,10 +313,10 @@ export default {
             });
             return tables;
         },
-        onCopySuc: () => {
+        onCopySuc() {
             this.$message("复制成功");
         },
-        onCopyErr: () => {
+        onCopyErr() {
             this.$message("复制失败");
         },
     },
