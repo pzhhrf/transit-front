@@ -99,7 +99,7 @@
                         </el-table-column>
                         <el-table-column label="转存进度" align="center">
                             <template slot-scope="{ row }">
-                                <span>{{ row | formatStatus }}</span>
+                                <span v-html="formatStatus(row)"></span>
                             </template>
                         </el-table-column>
                         <el-table-column label="转存时间" align="center">
@@ -151,6 +151,7 @@ import Header from "@/components/Common/Header.vue";
 import request from "@/api/req.js";
 import { formatDate } from "@/filter";
 import { CheckLogin } from "@/utils/validate.js";
+import { delete } from "vue/types/umd";
 export default {
     name: "Task",
     components: {
@@ -175,6 +176,8 @@ export default {
                 return "转存成功";
             } else if (row.status == 5) {
                 return "转存失败";
+            } else if (row.status == 6) {
+                return "已过期";
             } else {
                 return "--";
             }
@@ -190,7 +193,7 @@ export default {
             },
             parseData: [],
             downData: [],
-            timerList: [],
+            timerDict: {},
             currentPage: 1,
             pagesize: 10,
             total: 0,
@@ -202,9 +205,9 @@ export default {
         }
     },
     beforeDestroy() {
-        this.timerList.forEach((element) => {
-            clearInterval(element);
-        });
+        for (var key in this.timerDict) {
+            clearInterval(this.timerDict[key]);
+        }
     },
     methods: {
         handleSizeChange(size) {
@@ -270,17 +273,17 @@ export default {
                 });
         },
         getSpeedInfo(id) {
-            var s = setInterval(() => {
+            var sid = setInterval(() => {
                 request.getSpeed({ id }).then((res) => {
                     if (res.code == 0) {
-                        if (res.data.complete == "1") {
-                            this.clearVal(s);
+                        if (res.data && res.data.complete == "1") {
+                            this.clearVal(id);
                             this.getTasks();
                         } else {
                             let info =
                                 "速度:" +
                                 res.data.speed +
-                                "<br>进度:" +
+                                "</br>进度:" +
                                 res.data.percent +
                                 "%";
                             this.dealTable(id, info);
@@ -288,7 +291,7 @@ export default {
                     }
                 });
             }, 1000);
-            this.timerList.push(s);
+            this.timerDict[id] = sid;
         },
         dealTable(id, info) {
             this.downData.forEach((item, index) => {
@@ -301,9 +304,12 @@ export default {
                 }
             });
         },
-        clearVal(sid) {
-            clearInterval(sid);
-            this.timerList = this.timerList.filter((item) => item !== sid);
+        clearVal(id) {
+            sid = this.timerDict[id];
+            if (sid) {
+                clearInterval(sid);
+                delete this.timerDict[id];
+            }
         },
         dealDownData(tables) {
             tables.forEach((item) => {
