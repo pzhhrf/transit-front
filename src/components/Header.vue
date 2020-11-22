@@ -47,7 +47,7 @@
                     <div class="t02">邮箱</div>
                     <div class="t03" prop="email">
                         <div class="img">
-                            <img src="../../assets/i06.png" />
+                            <img src="../assets/i06.png" />
                         </div>
                         input(
                             type="text"
@@ -58,7 +58,7 @@
                     <div class="t04">密码</div>
                     <div class="t05" prop="password">
                         <div class="img">
-                            <img src="../../assets/i07.png" />
+                            <img src="../assets/i07.png" />
                         </div>
                         input(
                             type="password"
@@ -291,9 +291,9 @@ export default {
     position: relative;
 }
 .header .mid .logo {
-    width: 94px;
+    width: 130px;
     height: 32px;
-    background: url(../../assets/logo1.png) no-repeat center;
+    background: url(../assets/logo1.png) no-repeat center;
     position: absolute;
     left: 0;
     top: 12px;
@@ -301,18 +301,17 @@ export default {
     background-size: contain;
 }
 .header .mid .menu {
-    /* width: 520px; */
+    width: 500px;
     height: 56px;
     position: absolute;
-    right: 200px;
+    right: 250px;
     top: 0;
 }
 .header .mid .menu .ul {
-    /* width: 520px; */
     height: 56px;
 }
 .header .mid .menu .ul .li {
-    width: 100px;
+    width: 80px;
     height: 56px;
     float: left;
     text-align: center;
@@ -329,7 +328,7 @@ export default {
     width: 160px;
     height: 56px;
     position: absolute;
-    right: 0;
+    right: 150px;
     top: 0;
 }
 .header .mid .usernames {
@@ -381,7 +380,7 @@ export default {
 .login .l01 {
     width: 100%;
     height: 100px;
-    background: url(../../assets/logo1.png);
+    background: url(../assets/logo1.png);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;

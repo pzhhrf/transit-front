@@ -9,10 +9,7 @@ export default {
     data() {
         return {};
     },
-    created: function () {
-        var th = this;
-        th.openid = sessionStorage.getItem("openid");
-    },
+    created: function () {},
     computed: {
         isOk: function () {
             var th = this;

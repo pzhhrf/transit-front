@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import Header from "@/components/Common/Header.vue";
+import Header from "@/components/Header.vue";
 export default {
   name: "Index",
   components: {

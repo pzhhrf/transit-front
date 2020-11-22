@@ -5,7 +5,7 @@
             <div class="in_01">
                 <div class="textarea">
                     <textarea
-                        placeholder="请黏贴链接，多个链接隔行添加，不超过5个"
+                        placeholder="请黏贴链接"
                         v-model="param.url"
                     ></textarea>
                 </div>
@@ -147,11 +147,10 @@
 </template>
 
 <script>
-import Header from "@/components/Common/Header.vue";
+import Header from "@/components/Header.vue";
 import request from "@/api/req.js";
 import { formatDate } from "@/filter";
 import { CheckLogin } from "@/utils/validate.js";
-import { delete } from "vue/types/umd";
 export default {
     name: "Task",
     components: {
@@ -163,23 +162,6 @@ export default {
                 return "--";
             } else {
                 return formatDate(str);
-            }
-        },
-        formatStatus(row) {
-            if (row.status == 3) {
-                if (row.speedinfo) {
-                    return row.speedinfo;
-                } else {
-                    return "--";
-                }
-            } else if (row.status == 4) {
-                return "转存成功";
-            } else if (row.status == 5) {
-                return "转存失败";
-            } else if (row.status == 6) {
-                return "已过期";
-            } else {
-                return "--";
             }
         },
     },
@@ -217,9 +199,31 @@ export default {
             this.currentPage = current;
             this.getTasks();
         },
+        formatStatus(row) {
+            if (row.status == 3) {
+                if (row.speedinfo) {
+                    return row.speedinfo;
+                } else {
+                    return "--";
+                }
+            } else if (row.status == 4) {
+                return "转存成功";
+            } else if (row.status == 5) {
+                return "转存失败";
+            } else if (row.status == 6) {
+                return "已过期";
+            } else {
+                return "--";
+            }
+        },
         parseUrl() {
+            var url = this.param.url.replace(/^\s+|\s+$/g, "");
+            if (url == undefined || url == "") {
+                this.$message.error("请输入提取连接");
+                return;
+            }
             var array = new Array();
-            array.push(this.param.url);
+            array.push(url);
             let dict = {
                 list: array,
             };
@@ -231,7 +235,7 @@ export default {
                     if (res.code == 0) {
                         this.parseData = res.data;
                     } else {
-                        this.$message("提取失败");
+                        this.$message.error("提取失败");
                     }
                 })
                 .catch((e) => {
@@ -247,7 +251,7 @@ export default {
                 if (res.code == 0) {
                     this.getTasks();
                 } else {
-                    this.$message("添加任务失败");
+                    this.$message.error("添加任务失败");
                 }
             });
         },
@@ -269,29 +273,31 @@ export default {
                 .catch((e) => {
                     console.log(e);
                     this.isShowLoading = false;
-                    this.$message("访问服务失败");
+                    this.$message.error("网络异常,请重试");
                 });
         },
         getSpeedInfo(id) {
-            var sid = setInterval(() => {
-                request.getSpeed({ id }).then((res) => {
-                    if (res.code == 0) {
-                        if (res.data && res.data.complete == "1") {
-                            this.clearVal(id);
-                            this.getTasks();
-                        } else {
-                            let info =
-                                "速度:" +
-                                res.data.speed +
-                                "</br>进度:" +
-                                res.data.percent +
-                                "%";
-                            this.dealTable(id, info);
+            if (this.timerDict[id] == undefined) {
+                var sid = setInterval(() => {
+                    request.getSpeed({ id }).then((res) => {
+                        if (res.code == 0 && res.data) {
+                            if (res.data.complete == "1") {
+                                this.clearVal(id);
+                                this.getTasks();
+                            } else {
+                                let info =
+                                    "速度:" +
+                                    res.data.speed +
+                                    "</br>进度:" +
+                                    res.data.percent +
+                                    "%";
+                                this.dealTable(id, info);
+                            }
                         }
-                    }
-                });
-            }, 1000);
-            this.timerDict[id] = sid;
+                    });
+                }, 1500);
+                this.timerDict[id] = sid;
+            }
         },
         dealTable(id, info) {
             this.downData.forEach((item, index) => {
@@ -305,7 +311,7 @@ export default {
             });
         },
         clearVal(id) {
-            sid = this.timerDict[id];
+            var sid = this.timerDict[id];
             if (sid) {
                 clearInterval(sid);
                 delete this.timerDict[id];
@@ -320,10 +326,10 @@ export default {
             return tables;
         },
         onCopySuc() {
-            this.$message("复制成功");
+            this.$message.success("复制成功");
         },
         onCopyErr() {
-            this.$message("复制失败");
+            this.$message.success("复制失败");
         },
     },
 };
@@ -348,7 +354,7 @@ export default {
 }
 .in_01 .textarea {
     width: 820px;
-    height: 160px;
+    height: 100px;
     position: absolute;
     left: 0;
     top: 0;

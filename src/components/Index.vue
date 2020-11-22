@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import Header from "@/components/Common/Header.vue";
+import Header from "@/components/Header.vue";
 import request from "@/api/req.js";
 export default {
   name: "Index",
