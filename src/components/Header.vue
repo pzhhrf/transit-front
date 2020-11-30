@@ -1,4 +1,4 @@
-<template lang="pug">
+<template >
     <div class="header">
         <div class="mid">
             <div class="logo" @click="index"></div>
@@ -21,25 +21,24 @@
                     </div>
                 </div>
             </div>
-           
-            vue-loading(
+            <vue-loading
                 v-if="isLoading"
                 type="spin"
                 color="#d9544e"
                 :size="{ width: '50px', height: '50px' }"
-            )
+            ></vue-loading>
             <div v-if="loginStatus()" class="btns">
                 <div class="loginBtn" @click="login">登录</div>
                 <div class="reg" @click="reg">注册</div>
             </div>
             <div v-else class="usernames">
-                <div> 欢迎:{{ email }}</div>
-                <div> 今日剩余流量:{{ today_bandwidth }} </div>
+                <div>欢迎:{{ email }}</div>
+                <div>今日剩余流量:{{ today_bandwidth }}</div>
             </div>
         </div>
         <yd-popup v-model="showLogin" position="center" width="90%">
             <div class="login" ref="form-login">
-                //- <div class="l01"></div>
+                <div class="l01"></div>
                 <div class="l02">
                     <div class="t01">
                         <div class="span">登录</div>
@@ -49,26 +48,28 @@
                         <div class="img">
                             <img src="../assets/i06.png" />
                         </div>
-                        input(
-                            type="text"
+                        <el-input
+                            class="el-input"
                             v-model="email"
                             placeholder="请输入邮箱"
-                        )
+                        ></el-input>
                     </div>
                     <div class="t04">密码</div>
                     <div class="t05" prop="password">
                         <div class="img">
                             <img src="../assets/i07.png" />
                         </div>
-                        input(
+                        <el-input
                             type="password"
                             v-model="password"
                             placeholder="请输入密码"
-                        )
+                        ></el-input>
                     </div>
                     <div class="t06" @click="addLogin">登录</div>
                     <div class="t07">
-                        a(href="javascript:;" @click="tos" class="a01") 服务条款
+                        <a href="javascript:;" @click="tos" class="a01">
+                            服务条款</a
+                        >
                         <a href="" class="a02">忘记密码</a>
                     </div>
                 </div>
@@ -78,37 +79,40 @@
 
         <yd-popup v-model="showReg" position="center" width="90%">
             <div class="login reg" ref="form-reg">
-                //- <div class="l01"></div>
+                <div class="l01"></div>
                 <div class="l02">
                     <div class="t02">邮箱</div>
                     <div class="t03">
-                        input(
-                            type="text"
+                        <el-input
                             v-model="email"
                             placeholder="请输入邮箱"
-                        )
+                        ></el-input>
                     </div>
                     <div class="t02">验证码</div>
                     <div class="t03">
-                        <input type="text" v-model="code" placeholder="验证码"/>
+                        <input
+                            type="text"
+                            v-model="code"
+                            placeholder="验证码"
+                        />
                         <span @click="getCode">获取验证码</span>
                     </div>
                     <div class="t04">密码</div>
                     <div class="t05">
-                        input(
+                        <el-input
                             type="password"
                             v-model="password"
                             name=""
                             placeholder="请输入密码"
-                        )
+                        ></el-input>
                     </div>
                     <div class="t04">确认密码</div>
                     <div class="t05">
-                        input(
+                        <el-input
                             type="password"
                             v-model="password2"
                             placeholder="请输入密码"
-                        )
+                        ></el-input>
                     </div>
                     <div class="t06" @click="addReg">注册</div>
                     <div class="t07">
@@ -501,5 +505,8 @@ export default {
     color: #333;
     font-size: 30px;
     cursor: pointer;
+}
+.el-input {
+    width: 280px;
 }
 </style>
