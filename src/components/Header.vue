@@ -90,11 +90,7 @@
                     </div>
                     <div class="t02">验证码</div>
                     <div class="t03">
-                        <input
-                            type="text"
-                            v-model="code"
-                            placeholder="验证码"
-                        />
+                        <el-input v-model="code" placeholder="验证码" />
                         <span @click="getCode">获取验证码</span>
                     </div>
                     <div class="t04">密码</div>
